@@ -6,6 +6,7 @@ import RobotoMedium from "./src/assets/fonts/Roboto-Medium.ttf";
 import RobotoBold from "./src/assets/fonts/Roboto-Bold.ttf";
 
 import RegistrationScreen from "./src/Screens/RegistrationScreen";
+import LoginScreen from "./src/Screens/LoginScreen";
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -27,7 +28,13 @@ const App = () => {
       />
     );
   }
-  return <RegistrationScreen />;
+
+  return (
+    <>
+      {/* <LoginScreen /> */}
+      <RegistrationScreen />
+    </>
+  );
 };
 
 export default App;

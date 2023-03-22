@@ -4,18 +4,15 @@ import {
   View,
   TextInput,
   TouchableWithoutFeedback,
-  TouchableOpacity,
+  Platform,
   Keyboard,
+  TouchableOpacity,
   Text,
   ImageBackground,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import bgImage from "../assets/images/photo_bg.png";
-import InputAvatar from "../components/InputAvatar";
 
-const RegistrationScreen = () => {
-  const [login, setLogin] = useState("");
-  const [isActiveLogin, setIsActiveLogin] = useState(false);
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [isActiveEmail, setIsActiveEmail] = useState(false);
   const [password, setPassword] = useState("");
@@ -23,11 +20,14 @@ const RegistrationScreen = () => {
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
-  const [photo, setPhoto] = useState(null);
 
-  const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
+
+  const reset = () => {
+    setEmail("");
+    setPassword("");
+  };
 
   useEffect(() => {
     if (!password) {
@@ -36,8 +36,17 @@ const RegistrationScreen = () => {
     }
   }, [password]);
 
+  const loginHandler = () => {
+    if (!email || !password) {
+      alert("Введите все данные");
+      return;
+    }
+    console.log({ email, password });
+    reset();
+  };
+
   const showPassword = () => {
-    if (!password && secure) return;
+    if (password === "" && secure) return;
     if (secure) {
       setSecure(false);
       setSecureText("Скрыть");
@@ -45,41 +54,6 @@ const RegistrationScreen = () => {
     }
     setSecure(true);
     setSecureText("Показать");
-  };
-
-  const changePhotoAvatar = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (!result.canceled) {
-        setPhoto(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deletePhoto = () => {
-    setPhoto(null);
-  };
-
-  const reset = () => {
-    setLogin("");
-    setEmail("");
-    setPassword("");
-  };
-
-  const registerHandler = () => {
-    if (!login || !email || !password) {
-      alert("Введите все данные");
-      return;
-    }
-    console.log({ login, email, password, photo });
-    reset();
   };
 
   return (
@@ -94,37 +68,17 @@ const RegistrationScreen = () => {
           <View
             style={{
               ...styles.form,
-              paddingBottom: Platform.OS == "android" && showKeyboard ? 0 : 78,
+              paddingBottom: Platform.OS == "android" && showKeyboard ? 0 : 144,
             }}
           >
-            <InputAvatar
-              photo={photo}
-              deletePhoto={deletePhoto}
-              changePhotoAvatar={changePhotoAvatar}
-            />
-            <Text style={styles.title}>Регистрация</Text>
-            <TextInput
-              placeholder="Логин"
-              value={login}
-              onChangeText={loginHandler}
-              placeholderTextColor="#BDBDBD"
-              onBlur={() => {
-                setIsActiveLogin(false);
-              }}
-              onFocus={() => {
-                setIsActiveLogin(true);
-                setShowKeyboard(true);
-              }}
-              style={isActiveLogin ? styles.activeInput : styles.input}
-            />
+            <Text style={styles.title}>Войти</Text>
             <TextInput
               placeholder="Адрес электронной почты"
               value={email}
               onChangeText={emailHandler}
               placeholderTextColor="#BDBDBD"
-              onBlur={() => {
-                setIsActiveEmail(false);
-              }}
+              selectionColor="#212121"
+              onBlur={() => setIsActiveEmail(false)}
               onFocus={() => {
                 setIsActiveEmail(true);
                 setShowKeyboard(true);
@@ -143,10 +97,9 @@ const RegistrationScreen = () => {
                 value={password}
                 onChangeText={passwordHandler}
                 placeholderTextColor="#BDBDBD"
+                selectionColor="#212121"
                 secureTextEntry={secure}
-                onBlur={() => {
-                  setIsActivePassword(false);
-                }}
+                onBlur={() => setIsActivePassword(false)}
                 onFocus={() => {
                   setIsActivePassword(true);
                   setShowKeyboard(true);
@@ -156,12 +109,12 @@ const RegistrationScreen = () => {
                     ? {
                         ...styles.activeInput,
                         marginBottom:
-                          Platform.OS == "ios" && showKeyboard ? 165 : 0,
+                          Platform.OS == "ios" && showKeyboard ? 100 : 0,
                       }
                     : {
                         ...styles.input,
                         marginBottom:
-                          Platform.OS == "ios" && showKeyboard ? 165 : 0,
+                          Platform.OS == "ios" && showKeyboard ? 100 : 0,
                       }
                 }
               />
@@ -173,13 +126,20 @@ const RegistrationScreen = () => {
                 <Text style={styles.lastInputText}>{secureText}</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.btn}
-              onPress={registerHandler}
+            <View
+              style={{
+                display:
+                  Platform.OS == "android" && showKeyboard ? "none" : "flex",
+              }}
             >
-              <Text style={styles.btnTitle}>Зарегистрироваться</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={loginHandler}
+              >
+                <Text style={styles.btnTitle}>Войти</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ImageBackground>
       </View>
@@ -197,34 +157,37 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: "100%",
-    backgroundColor: "#fff",
     justifyContent: "center",
-    paddingTop: 92,
+    backgroundColor: "#fff",
+    paddingTop: 32,
     paddingHorizontal: 16,
-    paddingBottom: 78,
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
   },
   title: {
+    textAlign: "center",
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
+    letterSpacing: 0.01,
     color: "#212121",
-    textAlign: "center",
+
     marginBottom: 33,
   },
   input: {
     height: 50,
+
     backgroundColor: "#F6F6F6",
+    color: "#212121",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#E8E8E8",
-    color: "#212121",
     padding: 16,
     marginBottom: 16,
   },
   activeInput: {
     height: 50,
+
     backgroundColor: "#FFF",
     color: "#212121",
     borderRadius: 8,
@@ -242,6 +205,7 @@ const styles = StyleSheet.create({
     top: 16,
   },
   lastInputText: {
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#1B4371",
@@ -250,14 +214,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 100,
     paddingVertical: 16,
+    marginBottom: 16,
   },
   btnTitle: {
+    textAlign: "center",
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#FFF",
-    textAlign: "center",
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;
