@@ -10,8 +10,9 @@ import {
   ImageBackground,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import bgImage from "../assets/images/photo_bg.png";
-import InputAvatar from "../components/InputAvatar";
+import bgImage from "../../assets/images/photo_bg.png";
+import InputAvatar from "../../components/InputAvatar";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const RegistrationScreen = () => {
   const [login, setLogin] = useState("");
@@ -24,6 +25,8 @@ const RegistrationScreen = () => {
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
   const [photo, setPhoto] = useState(null);
+
+  const { isAuth, setIsAuth } = useAuthContext();
 
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
@@ -79,6 +82,7 @@ const RegistrationScreen = () => {
       return;
     }
     console.log({ login, email, password, photo });
+    setIsAuth(true);
     reset();
   };
 

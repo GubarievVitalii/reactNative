@@ -1,12 +1,13 @@
 import { useState } from "react";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
+import { NavigationContainer } from "@react-navigation/native";
+
 import RobotoRegular from "./src/assets/fonts/Roboto-Regular.ttf";
 import RobotoMedium from "./src/assets/fonts/Roboto-Medium.ttf";
 import RobotoBold from "./src/assets/fonts/Roboto-Bold.ttf";
 
-import RegistrationScreen from "./src/Screens/RegistrationScreen";
-import LoginScreen from "./src/Screens/LoginScreen";
+import Main from "./src/components/Main";
 
 const loadFonts = async () => {
   await Font.loadAsync({
@@ -30,10 +31,9 @@ const App = () => {
   }
 
   return (
-    <>
-      {/* <LoginScreen /> */}
-      <RegistrationScreen />
-    </>
+    <NavigationContainer>
+      <Main />
+    </NavigationContainer>
   );
 };
 

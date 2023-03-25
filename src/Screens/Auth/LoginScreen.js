@@ -10,7 +10,8 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
-import bgImage from "../assets/images/photo_bg.png";
+import bgImage from "../../assets/images/photo_bg.png";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,8 @@ const LoginScreen = () => {
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
+
+  const { isAuth, setIsAuth } = useAuthContext();
 
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
@@ -42,6 +45,7 @@ const LoginScreen = () => {
       return;
     }
     console.log({ email, password });
+    setIsAuth(true);
     reset();
   };
 
