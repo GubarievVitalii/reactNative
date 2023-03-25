@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
 
-  const { isAuth, setIsAuth } = useAuthContext();
+  const { setIsAuth } = useAuthContext();
 
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);

@@ -26,7 +26,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [secureText, setSecureText] = useState("Показать");
   const [photo, setPhoto] = useState(null);
 
-  const { isAuth, setIsAuth } = useAuthContext();
+  const { setIsAuth } = useAuthContext();
 
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);

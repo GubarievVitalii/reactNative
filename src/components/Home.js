@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import PostsScreen from "../Screens/MainScreens/PostsScreen";
 import CreatePostsScreen from "../Screens/MainScreens/CreatePostsScreen";
 import ProfileScreen from "../Screens/MainScreens/ProfileScreen";
+import LogoutIcon from "./LogoutIcon";
 
 const MainTab = createBottomTabNavigator();
 
@@ -31,6 +32,7 @@ const Home = ({ navigation }) => {
           ),
           ...headerOptions,
           title: "Публикации",
+          headerRight: () => <LogoutIcon style={styles.iconExit} />,
         }}
       />
       <MainTab.Screen
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 20,
   },
+  iconExit: { marginRight: 21 },
 });
 
 export const headerOptions = {
