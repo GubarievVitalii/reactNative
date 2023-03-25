@@ -13,7 +13,7 @@ import {
 import bgImage from "../../assets/images/photo_bg.png";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [isActiveEmail, setIsActiveEmail] = useState(false);
   const [password, setPassword] = useState("");
@@ -58,6 +58,10 @@ const LoginScreen = () => {
     }
     setSecure(true);
     setSecureText("Показать");
+  };
+
+  const onLinkClick = () => {
+    navigation.navigate("Register");
   };
 
   return (
@@ -143,6 +147,12 @@ const LoginScreen = () => {
               >
                 <Text style={styles.btnTitle}>Войти</Text>
               </TouchableOpacity>
+              <View style={styles.wrapper}>
+                <Text style={styles.link}>Нет аккаунта? </Text>
+                <TouchableOpacity activeOpacity={0.7} onPress={onLinkClick}>
+                  <Text style={styles.link}>Зарегистрироваться</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ImageBackground>
@@ -226,6 +236,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#FFF",
+  },
+  wrapper: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  link: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
   },
 });
 

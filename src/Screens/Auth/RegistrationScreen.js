@@ -14,7 +14,7 @@ import bgImage from "../../assets/images/photo_bg.png";
 import InputAvatar from "../../components/InputAvatar";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
   const [isActiveLogin, setIsActiveLogin] = useState(false);
   const [email, setEmail] = useState("");
@@ -84,6 +84,10 @@ const RegistrationScreen = () => {
     console.log({ login, email, password, photo });
     setIsAuth(true);
     reset();
+  };
+
+  const onLinkClick = () => {
+    navigation.navigate("Login");
   };
 
   return (
@@ -184,6 +188,12 @@ const RegistrationScreen = () => {
             >
               <Text style={styles.btnTitle}>Зарегистрироваться</Text>
             </TouchableOpacity>
+            <View style={styles.wrapper}>
+              <Text style={styles.link}>Уже есть аккаунт? </Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={onLinkClick}>
+                <Text style={styles.link}>Войти</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ImageBackground>
       </View>
@@ -254,6 +264,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 100,
     paddingVertical: 16,
+    marginBottom: 16,
   },
   btnTitle: {
     fontFamily: "Roboto-Regular",
@@ -261,6 +272,18 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#FFF",
     textAlign: "center",
+  },
+  wrapper: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  link: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
   },
 });
 
