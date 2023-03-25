@@ -7,14 +7,26 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Text,
+  TextInput,
+  Platform,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const CreatePostsScreen = () => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [cameraReady, setCameraReady] = useState(false);
+  const [title, setTitle] = useState("");
+  const [place, setPlace] = useState("");
+  const [showKeyboard, setShowKeyboard] = useState(false);
+
+  const titleHandler = (text) => setTitle(text);
+  const placeHandler = (text) => setPlace(text);
+
+  const { setPhotos } = useAuthContext();
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
@@ -72,6 +84,44 @@ const CreatePostsScreen = () => {
         >
           {!photo ? "Загрузите фото" : "Редактировать фото"}
         </Text>
+        <TextInput
+          placeholder="Название..."
+          value={title}
+          onChangeText={titleHandler}
+          placeholderTextColor="#BDBDBD"
+          selectionColor="#212121"
+          onFocus={() => setShowKeyboard(true)}
+          onBlur={() => setShowKeyboard(false)}
+          style={{
+            ...styles.input,
+            marginTop: Platform.OS === "android" && showKeyboard ? -20 : 0,
+          }}
+        />
+        <View
+          style={{
+            ...styles.input,
+            marginTop: Platform.OS === "android" && showKeyboard ? -20 : 0,
+            marginBottom: 32,
+            paddingLeft: 28,
+            position: "relative",
+          }}
+        >
+          <EvilIcons
+            name="location"
+            size={24}
+            color="#BDBDBD"
+            style={styles.iconLocation}
+          />
+          <TextInput
+            placeholder="Местность..."
+            value={place}
+            onChangeText={placeHandler}
+            placeholderTextColor="#BDBDBD"
+            selectionColor="#212121"
+            onFocus={() => setShowKeyboard(true)}
+            onBlur={() => setShowKeyboard(false)}
+          />
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -115,6 +165,16 @@ const styles = StyleSheet.create({
     color: "#BDBDBD",
     marginBottom: 32,
   },
+  input: {
+    position: "relative",
+    height: 50,
+    color: "#212121",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E8E8E8",
+    paddingVertical: 16,
+    marginBottom: 16,
+  },
+  iconLocation: { position: "absolute", left: 0, top: 13 },
 });
 
 export default CreatePostsScreen;
