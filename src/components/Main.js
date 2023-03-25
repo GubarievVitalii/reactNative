@@ -4,6 +4,7 @@ import { AuthContext } from "../hooks/useAuthContext";
 import RegistrationScreen from "../Screens/Auth/RegistrationScreen";
 import LoginScreen from "../Screens/Auth/LoginScreen";
 import Home from "./Home";
+import AddInfo from "./AddInfo";
 
 const MainStack = createStackNavigator();
 
@@ -21,6 +22,7 @@ const Main = () => {
         ) : (
           <>
             <MainStack.Screen name="Home" component={Home} />
+            <MainStack.Screen name="AddInfo" component={AddInfo} />
           </>
         )}
       </MainStack.Navigator>
