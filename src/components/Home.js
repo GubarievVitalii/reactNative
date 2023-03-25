@@ -8,6 +8,7 @@ import PostsScreen from "../Screens/MainScreens/PostsScreen";
 import CreatePostsScreen from "../Screens/MainScreens/CreatePostsScreen";
 import ProfileScreen from "../Screens/MainScreens/ProfileScreen";
 import LogoutIcon from "./LogoutIcon";
+import HeaderIcon from "./HeaderIcon";
 
 const MainTab = createBottomTabNavigator();
 
@@ -47,6 +48,7 @@ const Home = ({ navigation }) => {
           tabBarStyle: { display: "none" },
           ...headerOptions,
           title: "Создать публикацию",
+          headerLeft: () => <HeaderIcon navigation={navigation} />,
         }}
       />
       <MainTab.Screen

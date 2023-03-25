@@ -14,6 +14,7 @@ const AddInfo = ({ navigation }) => {
         options={{
           ...headerOptions,
           title: "Комментарии",
+          headerLeft: () => <HeaderIcon navigation={navigation} />,
         }}
       />
       <NestedScreen.Screen
@@ -22,6 +23,7 @@ const AddInfo = ({ navigation }) => {
         options={{
           ...headerOptions,
           title: "Карта",
+          headerLeft: () => <HeaderIcon navigation={navigation} />,
         }}
       />
     </NestedScreen.Navigator>
