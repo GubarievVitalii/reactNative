@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   ImageBackground,
@@ -11,17 +11,34 @@ import {
   Platform,
 } from "react-native";
 import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
-const CreatePostsScreen = () => {
-  const [camera, setCamera] = useState(null);
+const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
-  const [cameraReady, setCameraReady] = useState(false);
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
+  const [location, setLocation] = useState(null);
+
+  const [camera, setCamera] = useState(null);
+  const [cameraReady, setCameraReady] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const locationRes = await Location.getCurrentPositionAsync({});
+      console.log("location", locationRes);
+      setLocation(locationRes.coords);
+    })();
+  }, []);
 
   const titleHandler = (text) => setTitle(text);
   const placeHandler = (text) => setPlace(text);
@@ -35,6 +52,22 @@ const CreatePostsScreen = () => {
 
   const onCameraReady = () => {
     setCameraReady(true);
+  };
+
+  const reset = () => {
+    setPhoto(null);
+    setTitle("");
+    setPlace("");
+  };
+
+  const publishPost = async () => {
+    setPhotos((prev) => [
+      ...prev,
+      { photo, title, place, location, likes: [], comments: 0 },
+    ]);
+    console.log({ photo, title, place, location, likes: [], comments: 0 });
+    navigation.navigate("Posts");
+    reset();
   };
 
   return (
@@ -122,6 +155,34 @@ const CreatePostsScreen = () => {
             onBlur={() => setShowKeyboard(false)}
           />
         </View>
+        <TouchableOpacity
+          onPress={publishPost}
+          activeOpacity={0.8}
+          style={{
+            ...styles.btn,
+            marginBottom: !showKeyboard ? "auto" : 20,
+            backgroundColor: !title || !photo || !place ? "#F6F6F6" : "#FF6C00",
+          }}
+          disabled={!title || !photo || !place ? true : false}
+        >
+          <Text
+            style={{
+              ...styles.btnTitle,
+              color: !title || !photo || !place ? "#BDBDBD" : "#FFF",
+            }}
+          >
+            Опубликовать
+          </Text>
+        </TouchableOpacity>
+        <View style={styles.blockDelete}>
+          <TouchableOpacity
+            style={styles.btnDelete}
+            activeOpacity={0.6}
+            onPress={reset}
+          >
+            <AntDesign name="delete" size={24} color="#BDBDBD" />
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -175,6 +236,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   iconLocation: { position: "absolute", left: 0, top: 13 },
+  btn: {
+    borderRadius: 100,
+    paddingVertical: 16,
+  },
+  btnTitle: {
+    textAlign: "center",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+  },
+  blockDelete: { width: "100%", alignItems: "center" },
+  btnDelete: {
+    width: 70,
+    height: 40,
+    backgroundColor: "#F6F6F6",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+  },
 });
 
 export default CreatePostsScreen;
