@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Provider } from "react-redux";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 
+import { store } from "./src/redux/store";
 import RobotoRegular from "./src/assets/fonts/Roboto-Regular.ttf";
 import RobotoMedium from "./src/assets/fonts/Roboto-Medium.ttf";
 import RobotoBold from "./src/assets/fonts/Roboto-Bold.ttf";
@@ -31,9 +33,11 @@ const App = () => {
   }
 
   return (
-    <NavigationContainer>
-      <Main />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Main />
+      </NavigationContainer>
+    </Provider>
   );
 };
 
