@@ -27,6 +27,8 @@ const CreatePostsScreen = ({ navigation }) => {
   const [cameraReady, setCameraReady] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(false);
 
+  const { setPosts } = useAuthContext();
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -42,8 +44,6 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const titleHandler = (text) => setTitle(text);
   const placeHandler = (text) => setPlace(text);
-
-  const { setPhotos } = useAuthContext();
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
@@ -61,11 +61,10 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const publishPost = async () => {
-    setPhotos((prev) => [
+    setPosts((prev) => [
       ...prev,
       { photo, title, place, location, likes: [], comments: 0 },
     ]);
-    console.log({ photo, title, place, location, likes: [], comments: 0 });
     navigation.navigate("Posts");
     reset();
   };

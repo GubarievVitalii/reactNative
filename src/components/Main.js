@@ -10,10 +10,10 @@ const MainStack = createStackNavigator();
 
 const Main = () => {
   const [isAuth, setIsAuth] = useState(false);
-  const [photos, setPhotos] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   return (
-    <AuthContext.Provider value={{ isAuth, setIsAuth, photos, setPhotos }}>
+    <AuthContext.Provider value={{ isAuth, setIsAuth, posts, setPosts }}>
       <MainStack.Navigator screenOptions={{ headerShown: false }}>
         {!isAuth ? (
           <>
