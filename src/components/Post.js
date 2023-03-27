@@ -1,12 +1,13 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
-
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { EvilIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
+import { ref, deleteObject } from "firebase/storage";
+import { db, storage } from "../firebase/config";
 import { getUserId, getUserName } from "../redux/auth/authSelectors";
 import CommentsIcon from "./CommentsIcon";
 import LikeIcon from "./LikeIcon";
@@ -14,6 +15,7 @@ import LikeIcon from "./LikeIcon";
 const Post = ({ post, navigation }) => {
   const {
     photo,
+    photoId,
     title,
     place,
     location,
@@ -57,6 +59,17 @@ const Post = ({ post, navigation }) => {
     }
   };
 
+  const deletePost = async () => {
+    try {
+      await deleteDoc(doc(db, "posts", id));
+      const desertRef = ref(storage, `postImages/${photoId}`);
+      await deleteObject(desertRef);
+      setShowModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const navigateToComments = () => {
     navigation.navigate("AddInfo", {
       screen: "Comments",
@@ -80,6 +93,15 @@ const Post = ({ post, navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: photo }} style={styles.img} />
+      {route.name === "Profile" && (
+        <AntDesign
+          name="closecircleo"
+          size={20}
+          color="#FF6C00"
+          style={styles.btnDelete}
+          onPress={() => deletePost()}
+        />
+      )}
       <Text style={styles.title}>{title}</Text>
       <View
         style={{
@@ -150,6 +172,11 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     color: "#212121",
     marginLeft: 4,
+  },
+  btnDelete: {
+    position: "absolute",
+    top: 10,
+    right: 10,
   },
 });
 
