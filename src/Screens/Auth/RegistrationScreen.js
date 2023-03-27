@@ -9,6 +9,7 @@ import {
   Keyboard,
   Text,
   ImageBackground,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import bgImage from "../../assets/images/photo_bg.png";
@@ -118,6 +119,7 @@ const RegistrationScreen = ({ navigation }) => {
               value={login}
               onChangeText={loginHandler}
               placeholderTextColor="#BDBDBD"
+              selectionColor="#212121"
               onBlur={() => {
                 setIsActiveLogin(false);
               }}
@@ -132,6 +134,7 @@ const RegistrationScreen = ({ navigation }) => {
               value={email}
               onChangeText={emailHandler}
               placeholderTextColor="#BDBDBD"
+              selectionColor="#212121"
               onBlur={() => {
                 setIsActiveEmail(false);
               }}
@@ -153,6 +156,7 @@ const RegistrationScreen = ({ navigation }) => {
                 value={password}
                 onChangeText={passwordHandler}
                 placeholderTextColor="#BDBDBD"
+                selectionColor="#212121"
                 secureTextEntry={secure}
                 onBlur={() => {
                   setIsActivePassword(false);
@@ -183,18 +187,25 @@ const RegistrationScreen = ({ navigation }) => {
                 <Text style={styles.lastInputText}>{secureText}</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.btn}
-              onPress={registerHandler}
+            <View
+              style={{
+                display:
+                  Platform.OS == "android" && showKeyboard ? "none" : "flex",
+              }}
             >
-              <Text style={styles.btnTitle}>Зарегистрироваться</Text>
-            </TouchableOpacity>
-            <View style={styles.wrapper}>
-              <Text style={styles.link}>Уже есть аккаунт? </Text>
-              <TouchableOpacity activeOpacity={0.7} onPress={onLinkClick}>
-                <Text style={styles.link}>Войти</Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.btn}
+                onPress={registerHandler}
+              >
+                <Text style={styles.btnTitle}>Зарегистрироваться</Text>
               </TouchableOpacity>
+              <View style={styles.wrapper}>
+                <Text style={styles.link}>Уже есть аккаунт? </Text>
+                <TouchableOpacity activeOpacity={0.7} onPress={onLinkClick}>
+                  <Text style={styles.link}>Войти</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ImageBackground>

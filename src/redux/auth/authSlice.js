@@ -17,7 +17,11 @@ const authSlice = createSlice({
     isLoading: false,
     error: "",
   },
-  reducers: {},
+  reducers: {
+    changePhoto(state, { payload }) {
+      state.photo = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -72,4 +76,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { changePhoto } = authSlice.actions;
 export default authSlice.reducer;
