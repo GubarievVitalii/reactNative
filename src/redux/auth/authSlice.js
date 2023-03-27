@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser, loginUser, logoutUser } from "./authOperations";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  currentUser,
+} from "./authOperations";
 
 const authSlice = createSlice({
   name: "auth",
@@ -55,6 +60,14 @@ const authSlice = createSlice({
         state.email = "";
         state.photo = "";
         state.isAuth = false;
+      })
+      .addCase(currentUser.fulfilled, (state, { payload }) => {
+        const { userId, name, email, photo, isAuth } = payload;
+        state.id = userId;
+        state.name = name;
+        state.email = email;
+        state.photo = photo;
+        state.isAuth = isAuth;
       });
   },
 });

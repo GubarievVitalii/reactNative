@@ -1,13 +1,61 @@
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { EvilIcons } from "@expo/vector-icons";
+
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
+import { getUserId, getUserName } from "../redux/auth/authSelectors";
 import CommentsIcon from "./CommentsIcon";
 import LikeIcon from "./LikeIcon";
 
 const Post = ({ post, navigation }) => {
-  const { photo, title, place, location, comments, likes } = post;
+  const {
+    photo,
+    title,
+    place,
+    location,
+    id,
+    comments,
+    likes,
+    userId: itemUserId,
+  } = post;
 
+  const userId = useSelector(getUserId);
+  const userName = useSelector(getUserName);
   const route = useRoute();
+
+  const userLike = useMemo(
+    () => likes.find((item) => item.userId === userId),
+    [likes]
+  );
+
+  const addLike = async () => {
+    if (itemUserId === userId) {
+      alert("Это ваша публикация, вы не можете ее лайкать");
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "posts", id);
+      const docSnap = await getDoc(docRef);
+      const docData = docSnap.data();
+      const ourLike = docData.likes.find((item) => item.userId === userId);
+      if (ourLike) {
+        await updateDoc(docRef, {
+          likes: docData.likes.filter((item) => item.userId !== userId),
+        });
+        return;
+      }
+      await updateDoc(docRef, {
+        likes: [...docData.likes, { userId, userName }],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const navigateToComments = () => {
     navigation.navigate("AddInfo", {
@@ -48,7 +96,11 @@ const Post = ({ post, navigation }) => {
           <Text style={styles.commentsText}>{comments}</Text>
         </View>
         <View style={{ ...styles.iconsContainer, marginLeft: 24 }}>
-          <LikeIcon name="like2" />
+          {!userLike ? (
+            <LikeIcon name="like2" onPress={addLike} />
+          ) : (
+            <LikeIcon name="like1" onPress={addLike} />
+          )}
           <Text style={styles.commentsText}>{likes.length}</Text>
         </View>
         <View style={{ ...styles.iconsContainer, marginLeft: "auto" }}>

@@ -93,3 +93,28 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
+
+export const currentUser = createAsyncThunk("auth/current", async () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      if (user) {
+        resolve({
+          userId: user.uid,
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+          isAuth: true,
+        });
+      } else {
+        resolve({
+          userId: "",
+          name: "",
+          email: "",
+          photo: "",
+          isAuth: false,
+        });
+      }
+    });
+  });
+});
