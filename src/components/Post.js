@@ -74,6 +74,8 @@ const Post = ({ post, navigation }) => {
     navigation.navigate("AddInfo", {
       screen: "Comments",
       params: {
+        postId: id,
+        photo,
         back: route.name,
       },
     });
