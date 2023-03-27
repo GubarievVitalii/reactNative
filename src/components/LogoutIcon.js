@@ -1,8 +1,9 @@
+import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { logoutUser } from "../redux/auth/authOperations";
 
 const LogoutIcon = ({ style }) => {
-  const { setIsAuth } = useAuthContext();
+  const dispatch = useDispatch();
 
   return (
     <Ionicons
@@ -10,7 +11,7 @@ const LogoutIcon = ({ style }) => {
       style={style}
       size={24}
       color="rgba(33, 33, 33, 0.8)"
-      onPress={() => setIsAuth(false)}
+      onPress={() => dispatch(logoutUser())}
     />
   );
 };

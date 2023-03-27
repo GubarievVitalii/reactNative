@@ -10,8 +10,9 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import bgImage from "../../assets/images/photo_bg.png";
-import { useAuthContext } from "../../hooks/useAuthContext";
+import { loginUser } from "../../redux/auth/authOperations";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
 
-  const { setIsAuth } = useAuthContext();
+  const dispatch = useDispatch();
 
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
@@ -44,8 +45,7 @@ const LoginScreen = ({ navigation }) => {
       alert("Введите все данные");
       return;
     }
-    console.log({ email, password });
-    setIsAuth(true);
+    dispatch(loginUser({ email, password }));
     reset();
   };
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -11,8 +12,9 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import bgImage from "../../assets/images/photo_bg.png";
+import { registerUser } from "../../redux/auth/authOperations";
+
 import InputAvatar from "../../components/InputAvatar";
-import { useAuthContext } from "../../hooks/useAuthContext";
 
 const RegistrationScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
@@ -26,7 +28,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [secureText, setSecureText] = useState("Показать");
   const [photo, setPhoto] = useState(null);
 
-  const { setIsAuth } = useAuthContext();
+  const dispatch = useDispatch();
 
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
@@ -71,6 +73,7 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const reset = () => {
+    setPhoto(null);
     setLogin("");
     setEmail("");
     setPassword("");
@@ -81,8 +84,7 @@ const RegistrationScreen = ({ navigation }) => {
       alert("Введите все данные");
       return;
     }
-    console.log({ login, email, password, photo });
-    setIsAuth(true);
+    dispatch(registerUser({ login, email, password, photo }));
     reset();
   };
 
