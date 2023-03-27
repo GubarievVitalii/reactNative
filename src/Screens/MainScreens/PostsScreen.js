@@ -1,10 +1,26 @@
+import { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { useAuthContext } from "../../hooks/useAuthContext";
+import { collection, onSnapshot } from "firebase/firestore";
 
+import { db } from "../../firebase/config";
 import Post from "../../components/Post";
 
 const PostsScreen = ({ navigation }) => {
-  const { posts } = useAuthContext();
+  const [posts, setPosts] = useState([]);
+
+  const getAllPosts = async () => {
+    onSnapshot(collection(db, "posts"), (querySnapshot) => {
+      const postsArray = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setPosts(postsArray);
+    });
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   return (
     <View style={styles.container}>

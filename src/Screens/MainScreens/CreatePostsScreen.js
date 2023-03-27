@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   ImageBackground,
@@ -15,7 +16,11 @@ import * as Location from "expo-location";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useAuthContext } from "../../hooks/useAuthContext";
+
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { db, storage } from "../../firebase/config";
+import { getUserId } from "../../redux/auth/authSelectors";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
@@ -27,7 +32,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [cameraReady, setCameraReady] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(false);
 
-  const { setPosts } = useAuthContext();
+  const userId = useSelector(getUserId);
 
   useEffect(() => {
     (async () => {
@@ -42,17 +47,12 @@ const CreatePostsScreen = ({ navigation }) => {
     })();
   }, []);
 
-  const titleHandler = (text) => setTitle(text);
-  const placeHandler = (text) => setPlace(text);
-
-  const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
-  };
-
   const onCameraReady = () => {
     setCameraReady(true);
   };
+
+  const titleHandler = (text) => setTitle(text);
+  const placeHandler = (text) => setPlace(text);
 
   const reset = () => {
     setPhoto(null);
@@ -60,13 +60,45 @@ const CreatePostsScreen = ({ navigation }) => {
     setPlace("");
   };
 
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    setPhoto(photo.uri);
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    const uniquePostId = Date.now().toString();
+
+    const storageRef = ref(storage, `postImages/${uniquePostId}`);
+    await uploadBytes(storageRef, file);
+
+    const photoUrl = await getDownloadURL(
+      ref(storage, `postImages/${uniquePostId}`)
+    );
+    return { photoUrl, uniquePostId };
+  };
+
   const publishPost = async () => {
-    setPosts((prev) => [
-      ...prev,
-      { photo, title, place, location, likes: [], comments: 0 },
-    ]);
-    navigation.navigate("Posts");
-    reset();
+    try {
+      const result = await uploadPhotoToServer();
+      const { photoUrl, uniquePostId } = result;
+      await addDoc(collection(db, "posts"), {
+        photo: photoUrl,
+        photoId: uniquePostId,
+        title,
+        place,
+        location,
+        userId,
+        likes: [],
+        comments: 0,
+      });
+      navigation.navigate("Posts");
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
