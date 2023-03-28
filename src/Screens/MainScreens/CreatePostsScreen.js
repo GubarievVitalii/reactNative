@@ -48,6 +48,7 @@ const CreatePostsScreen = ({ navigation }) => {
       console.log("location", locationRes);
       setLocation(locationRes.coords);
     })();
+    console.log("location", location);
   }, []);
 
   const onCameraReady = () => {
