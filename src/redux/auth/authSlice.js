@@ -18,6 +18,9 @@ const authSlice = createSlice({
     error: "",
   },
   reducers: {
+    changeError(state) {
+      state.error = null;
+    },
     changePhoto(state, { payload }) {
       state.photo = payload;
     },
@@ -76,5 +79,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { changePhoto } = authSlice.actions;
+export const { changePhoto, changeError } = authSlice.actions;
 export default authSlice.reducer;

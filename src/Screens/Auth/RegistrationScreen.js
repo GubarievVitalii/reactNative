@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -14,9 +14,10 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import bgImage from "../../assets/images/photo_bg.png";
 import { registerUser } from "../../redux/auth/authOperations";
-import { getAuthLoading } from "../../redux/auth/authSelectors";
+import { getAuthError, getAuthLoading } from "../../redux/auth/authSelectors";
 
 import InputAvatar from "../../components/InputAvatar";
+import Loader from "../../components/Loader";
 
 const RegistrationScreen = ({ navigation }) => {
   const [login, setLogin] = useState("");
@@ -31,7 +32,13 @@ const RegistrationScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
 
   const isLoading = useSelector(getAuthLoading);
+  const error = useSelector(getAuthError);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!error) return;
+    alert(error);
+  }, [error]);
 
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
@@ -92,6 +99,9 @@ const RegistrationScreen = ({ navigation }) => {
   };
 
   const onLinkClick = () => {
+    if (error) {
+      dispatch(changeError());
+    }
     navigation.navigate("Login");
   };
 

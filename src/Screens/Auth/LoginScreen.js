@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -10,10 +11,11 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import bgImage from "../../assets/images/photo_bg.png";
 import { loginUser } from "../../redux/auth/authOperations";
-import { getAuthLoading } from "../../redux/auth/authSelectors";
+import { getAuthError, getAuthLoading } from "../../redux/auth/authSelectors";
+
+import Loader from "../../components/Loader";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -25,7 +27,13 @@ const LoginScreen = ({ navigation }) => {
   const [secureText, setSecureText] = useState("Показать");
 
   const isLoading = useSelector(getAuthLoading);
+  const error = useSelector(getAuthError);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!error) return;
+    alert(error);
+  }, [error]);
 
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
@@ -63,6 +71,9 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const onLinkClick = () => {
+    if (error) {
+      dispatch(changeError());
+    }
     navigation.navigate("Register");
   };
 
