@@ -14,6 +14,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import bgImage from "../../assets/images/photo_bg.png";
 import { registerUser } from "../../redux/auth/authOperations";
+import { getAuthLoading } from "../../redux/auth/authSelectors";
 
 import InputAvatar from "../../components/InputAvatar";
 
@@ -29,6 +30,7 @@ const RegistrationScreen = ({ navigation }) => {
   const [secureText, setSecureText] = useState("Показать");
   const [photo, setPhoto] = useState(null);
 
+  const isLoading = useSelector(getAuthLoading);
   const dispatch = useDispatch();
 
   const loginHandler = (text) => setLogin(text);
@@ -207,6 +209,7 @@ const RegistrationScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {isLoading && <Loader />}
           </View>
         </ImageBackground>
       </View>

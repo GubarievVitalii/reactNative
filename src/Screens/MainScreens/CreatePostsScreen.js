@@ -22,11 +22,14 @@ import { collection, addDoc } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { getUserId } from "../../redux/auth/authSelectors";
 
+import Loader from "../../components/Loader";
+
 const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [location, setLocation] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [camera, setCamera] = useState(null);
   const [cameraReady, setCameraReady] = useState(false);
@@ -81,6 +84,7 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const publishPost = async () => {
+    setIsLoading(true);
     try {
       const result = await uploadPhotoToServer();
       const { photoUrl, uniquePostId } = result;
@@ -98,6 +102,8 @@ const CreatePostsScreen = ({ navigation }) => {
       reset();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -214,6 +220,7 @@ const CreatePostsScreen = ({ navigation }) => {
             <AntDesign name="delete" size={24} color="#BDBDBD" />
           </TouchableOpacity>
         </View>
+        {isLoading && <Loader />}
       </View>
     </TouchableWithoutFeedback>
   );

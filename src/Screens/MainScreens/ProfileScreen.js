@@ -27,12 +27,14 @@ import background from "../../assets/images/photo_bg.png";
 import Post from "../../components/Post";
 import LogoutIcon from "../../components/LogoutIcon";
 import InputAvatar from "../../components/InputAvatar";
+import Loader from "../../components/Loader";
 
 const ProfileScreen = ({ navigation }) => {
   const name = useSelector(getUserName);
   const userId = useSelector(getUserId);
   const photo = useSelector(getUserPhoto);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
 
   const dispatch = useDispatch();
@@ -67,6 +69,7 @@ const ProfileScreen = ({ navigation }) => {
   const changePhotoAvatar = async () => {
     try {
       const loadedPhoto = await loadPhoto();
+      setIsLoading(true);
       const response = await fetch(loadedPhoto);
       const file = await response.blob();
       const storageRef = ref(storage, `authImages/${userId}`);
@@ -79,6 +82,8 @@ const ProfileScreen = ({ navigation }) => {
       dispatch(changePhoto(photoUrl));
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,6 +116,7 @@ const ProfileScreen = ({ navigation }) => {
               <Post post={item} navigation={navigation} />
             )}
           />
+          {isLoading && <Loader />}
         </View>
       </ImageBackground>
     </View>

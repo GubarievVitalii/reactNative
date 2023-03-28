@@ -13,6 +13,7 @@ import {
 import { useDispatch } from "react-redux";
 import bgImage from "../../assets/images/photo_bg.png";
 import { loginUser } from "../../redux/auth/authOperations";
+import { getAuthLoading } from "../../redux/auth/authSelectors";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -23,6 +24,7 @@ const LoginScreen = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [secureText, setSecureText] = useState("Показать");
 
+  const isLoading = useSelector(getAuthLoading);
   const dispatch = useDispatch();
 
   const emailHandler = (text) => setEmail(text);
@@ -154,6 +156,7 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {isLoading && <Loader />}
           </View>
         </ImageBackground>
       </View>
